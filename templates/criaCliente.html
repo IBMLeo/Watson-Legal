@@ -1,0 +1,24 @@
+<html>
+
+<head>
+    <title>File Upload</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='criaCliente.js')}}"></script>
+</head>
+
+<body>
+    <h2>Cria Cliente</h2>
+    <input type="text" class="workspace_name" name="workspace_name" />
+    <button type="submit" class="create_workspace">Create</button>
+
+
+    <h3>Clientes Existentes</h3>
+    <ol>
+        {% for cliente in clientes %}
+        <li>{{cliente}}</li>
+        {% endfor %}
+    </ol>
+</body>
+
+</html>

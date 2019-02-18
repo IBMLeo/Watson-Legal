@@ -1,0 +1,79 @@
+body {
+    color: #404E67;
+    font-family: 'Open Sans', sans-serif;
+    background: #34495e;
+    text-align: center;
+    padding: 5px;
+}
+
+table {
+    max-width: 100%; 
+    margin: 0 auto; 
+    font-size: 12px;
+    vertical-align: middle;
+    text-align: center;
+    background-color: #FFF !important;
+}
+
+td{
+    max-width: 220px;
+}
+
+.processos-container{
+    width: 98%; 
+    background-color: #FFF; 
+    margin: 0 auto; 
+    margin-bottom: 5px; 
+    margin-top: 5px;
+}
+
+.processos-row{
+    text-align: center; 
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.navbar-custom{
+    background-color: white !important; 
+    border-bottom: 2px solid rgb(90, 135, 197) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: inherit !important;
+    /*border-top-color: red;*/
+}
+
+/* Linhas Duplas Impares*/
+.table-striped tbody tr:nth-child(4n+1), 
+.table-striped tbody tr:nth-child(4n+2) {
+    background-color: rgba(225, 235, 247, 0.5) !important;
+}
+
+.btn-group-align{
+    vertical-align: middle !important;
+}
+
+.cnj-align{
+    vertical-align: middle !important;
+    text-align: center !important;
+}
+
+.btn-custom{
+    width: 75px;
+    height: 35px;
+    text-align: center;
+    border-radius: 0;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    border-color: rgb(90, 135, 197);
+    background-color: rgb(90, 135, 197);
+    color: white;
+    font-size: 12px;
+}
+
+.btn-custom:hover{
+    color: #007bff;
+    border-color: #007bff;
+    background-color: inherit;
+}
+

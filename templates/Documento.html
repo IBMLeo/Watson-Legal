@@ -1,0 +1,15 @@
+<html>
+
+<head></head>
+
+<body style='height:100%; width: 100%;'>
+    {% if tipo=='inicial' %}
+    <iframe id="frame" src="{{url_for('static', filename='inicial.pdf')}}?{{time}}" style='height:100%; width: 100%;'></iframe>
+    {% else %}
+    <iframe id="frame" src="{{url_for('static', filename='sentenca.pdf')}}?{{time}}" style='height:100%; width: 100%;'></iframe>
+    {% endif %}
+</body>
+
+
+
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> {{ cliente }} </title>
+
+    <!-- External -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap & JQquery -->
+    <link rel="stylesheet" href="../static/bootstrap-4.1.3/css/bootstrap.css">
+    </link>
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/bootstrap-4.1.3/js/bootstrap.js"></script>
+    <script src="../static/js/jquery-ui.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+    <!-- Custom -->
+    <link rel="stylesheet" href="../static/css/cliente.css">
+    </link>
+    <script type="text/javascript" src="{{url_for('static', filename='cliente.js')}}"></script>
+</head>
+
+<body style="padding: 10px;" style="width:100%;">
+        <nav class="navbar navbar-light bg-light navbar-custom">
+                <a class="navbar-brand" href="#">
+                    <img src="../static/resources/logo.png" width="70" height="30" class="d-inline-block align-workspace-title" alt="">
+                </a>
+        
+                <div>
+                    {% if cliente %}
+                    <h1>{{ cliente }}</h1>
+                    {% else %}
+                    <h1>Hello, World!</h1>
+                    {% endif %}
+                </div>
+            </nav>
+        
+
+
+        <div id="main" style="background-color:#FFF;" class="" style="width:98%">
+            <div class="row">
+                    <div class="col" style="padding: 15px">
+                        <h3>
+                            Movimentações Analisadas: {{ json["movimentacoesProcessadas"] }}
+                        </h3>
+                    </div>
+                    <div class="col" style="padding: 15px;">
+                        <h3>
+                            Sentenças Encontradas: {{ json["sentencasEncontradas"] }}
+                        </h3>
+                    </div>
+                    <div class="col" style="padding: 15px">
+                        <h3>
+                            Sentenças Processadas: {{ json["sentencasProcessadas"] }}
+                        </h3>
+                    </div>
+            </div>
+            <div class="row" style="padding: 15px">
+                <div class="col" style="padding: 15px">
+                    <canvas id="grafico_1" height="400" width="500"></canvas>
+                </div>
+                <div class="col" style="padding: 15px; border-top: 2px dotted gainsboro; border-left: 2px dotted gainsboro; border-bottom: 2px dotted gainsboro;">
+                    <canvas id="grafico_1_2" height="400" width="250" style="margin: 0 auto;"></canvas>
+                </div>
+                <div class="col" style="padding: 15px; border-top: 2px dotted gainsboro; border-right: 2px dotted gainsboro; border-bottom: 2px dotted gainsboro;">
+                    <canvas id="grafico_2" height="175" width="250"></canvas>
+                </div>
+            </div>
+            
+            <div class="row" style="padding: 15px">
+                <div class="col" style="padding: 15px">
+                        <canvas id="grafico_4" height="400" width="500"></canvas>
+                </div>
+                <div class="col" style="padding: 15px; border-top: 2px dotted gainsboro; border-left: 2px dotted gainsboro; border-bottom: 2px dotted gainsboro;">
+                    <canvas id="grafico_4_2" height="400" width="250" style="margin: 0 auto;"></canvas>
+                </div>
+                <div class="col" style="padding: 15px; border-top: 2px dotted gainsboro; border-right: 2px dotted gainsboro; border-bottom: 2px dotted gainsboro;">
+                        <canvas id="grafico_5" height="175" width="250"></canvas>
+                </div>
+            </div>
+            
+            <div class="row" style="padding: 15px">
+                <div class="col" style="padding: 15px; width: 75%;">
+                    <canvas id="grafico_6" height="400" width="750"></canvas>
+                </div>
+                <div class="col" style="padding: 15px; width: 25%;">
+                        <canvas id="grafico_3" height="100" width="250"></canvas>
+                    </div>
+            </div>
+
+            <div class="row" style="padding: 15px">
+                <div class="col">
+                    <canvas id="grafico_7"></canvas>
+                </div>
+            </div>
+        </div>
+
+    <script>
+        var chart1 = document.getElementById('grafico_1').getContext('2d');
+        var chart1_2 = document.getElementById('grafico_1_2').getContext('2d');
+        var chart2 = document.getElementById('grafico_2').getContext('2d');
+        var chart3 = document.getElementById('grafico_3').getContext('2d');
+        var chart4 = document.getElementById('grafico_4').getContext('2d');
+        var chart4_2 = document.getElementById('grafico_4_2').getContext('2d');
+        var chart5 = document.getElementById('grafico_5').getContext('2d');
+        var chart6 = document.getElementById('grafico_6').getContext('2d');
+        var chart7 = document.getElementById('grafico_7').getContext('2d');
+
+        data = {
+            datasets: [{ 
+                data: {{ decisao_values }},
+                backgroundColor: [
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+                'rgba(255, 159, 64, 0.6)'
+                ]
+         }],
+            labels: {{ decisao_labels | safe }}
+        };
+        
+        var data1_2 = {
+            labels: ['Quantidade'],
+            datasets: [{
+                label: 'Sem ônus',
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                data: [
+                    {{ onus['Sem Ônus'] }}
+                ]
+            }, {
+                label: 'Com ônus',
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                data: [
+                    {{ onus['Com Ônus'] }}
+                ]
+            }, {
+                label: 'Não encontrado',
+                backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                data: [
+                    {{ onus['Não encontrado'] }}
+                ]
+            },
+            {
+                label: 'Decisão Extinta sem Resolução',
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                data: [
+                    {{ onus['Decisão Extinta sem resolução'] }}
+                ]
+            }]
+
+        };
+
+        data2 = {
+            datasets: [{ data: {{ [ onus['Não encontrado'], onus['Com Ônus'], onus['Sem Ônus'] ] }},
+                backgroundColor: [
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 99, 132, 0.6)',
+                ] }],
+            labels: ['Não Encontrado', 'Com Ônus', 'Sem Ônus']
+        }
+
+        data3 = {
+            datasets: [{ data: {{ [caf['Passivo'], caf['Ativo']] }},
+                backgroundColor: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+                'rgba(255, 159, 64, 0.6)'
+                ] }],
+            labels: ['Passivo', 'Ativo']
+        }
+
+        data4 = {
+            datasets: [{ data: {{ forum_values }},
+                backgroundColor: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+                'rgba(255, 159, 64, 0.6)'
+                ] }],
+            labels: {{ forum_labels | safe }}
+        }
+        
+        data4_2 = {
+            labels: ['Quantidade'],
+            datasets: [{
+                label: '0',
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                data: [
+                    {{ valor_values[0] }}
+                ]
+            }, {
+                label: '0-5000',
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                data: [
+                    {{ valor_values[1] }}
+                ]
+            }, {
+                label: '5000-15000',
+                backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                data: [
+                    {{ valor_values[2] }}
+                ]
+            },
+            {
+                label: '15000+',
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                data: [
+                    {{ valor_values[3] + valor_values[4] + valor_values[5] }}
+                ]
+            }]
+        }
+
+        data5 = {
+            datasets: [{ data: {{ valor_values[1:] }},
+                backgroundColor: [
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+                'rgba(255, 159, 64, 0.6)'
+                ] }],
+            labels: {{ valor_labels[1:] | safe }}
+        }
+
+        data6 = {
+            datasets: [{ data: {{ Data_values | safe }}, fill: false }],
+            labels: {{ Data_labels | safe }}
+        }
+
+        // var data7 = {
+        //     labels: {{ SentencasPorTipoLabels | safe }},
+        //     datasets: [
+        //         {% for tipo in SentencasPorTipo %}
+        //             {
+        //                 label: [
+        //                     {% for k in SentencasPorTipoLabels %}
+        //                         '{{ k | safe }}',
+        //                     {% endfor %}
+        //                 ],
+        //                 data: [
+        //                     {% for k, v in SentencasPorTipo[tipo].items() %}
+        //                         {{ v | safe }},
+        //                     {% endfor %}
+        //                 ]
+        //             },
+        //         {% endfor %}
+        //     ]
+
+        // };
+
+        var myPieChart = new Chart(chart1, {
+            type: 'bar',
+            data: data,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Decisões'
+                },
+                legend: {
+                    display: false
+                },
+                responsive: false,
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            fontSize:12,
+                            autoSkip: false,
+                            maxRotation: 90,
+                            minRotation: 90
+                        }
+                    }]
+                }
+            }
+        });
+
+        var myPieChart1_2 = new Chart(chart1_2, {
+            type: 'bar',
+            data: data1_2,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Resultado Decisão'
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        fontSize: 8
+                    },
+                    position: 'bottom'
+                },
+                responsive: false,
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+        
+
+        var myPieChart2 = new Chart(chart2, {
+            type: 'pie',
+            data: data2,
+            responsive: false,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Tipo de Ônus'
+                },
+                legend: {
+                    labels: {
+                        fontSize: 8
+                    },
+                    position: 'right',
+                }
+            }
+            
+        });
+
+        var myPieChart3 = new Chart(chart3, {
+            type: 'pie',
+            data: data3,
+            responsive: false,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Pólo do Processo'
+                },
+                legend: {
+                    labels: {
+                        fontSize: 8
+                    },
+                    position: 'right',
+                }
+            }
+        });
+
+        var myPieChart4 = new Chart(chart4, {
+            type: 'bar',
+            data: data4,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Forum'
+                },
+                legend: {
+                    display: false
+                },
+                responsive: false,
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            fontSize:12,
+                            autoSkip: false,
+                            maxRotation: 90,
+                            minRotation: 90
+                        }
+                    }]
+                }
+            }
+        });
+
+        var myPieChart4_2 = new Chart(chart4_2, {
+            type: 'bar',
+            data: data4_2,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Valor do Processo'
+                },
+                legend: {
+                    labels: {
+                        fontSize: 8
+                    },
+                    display: true,
+                    position: 'bottom'
+                },
+                responsive: false,
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+
+        var myPieChart5 = new Chart(chart5, {
+            type: 'pie',
+            data: data5,
+            responsive: false,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Valores'
+                },
+                legend: {
+                    labels: {
+                        fontSize: 8
+                    },
+                    position: 'right',
+                }
+            }
+        });
+
+        var myPieChart6 = new Chart(chart6, {
+            type: 'line',
+            data: data6,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Movimentações com indício de sentença por Data'
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+        // var chart7 = new Chart(chart7, {
+        //     type: 'bar',
+        //     data: data7,
+        //     options: {
+		// 			title: {
+		// 				display: true,
+		// 				text: 'Chart.js Bar Chart - Stacked'
+		// 			},
+		// 			tooltips: {
+		// 				mode: 'index',
+		// 				intersect: false
+		// 			},
+		// 			responsive: true,
+		// 			scales: {
+		// 				xAxes: [{
+		// 					stacked: true,
+		// 				}],
+		// 				yAxes: [{
+		// 					stacked: true
+		// 				}]
+		// 			}
+		// 		}
+        // });
+
+    </script>
+</body>
+
+</html>

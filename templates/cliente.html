@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> {{ cliente }} </title>
+
+    <!-- Bootstrap & JQquery -->
+    <link rel="stylesheet" href="../static/bootstrap-4.1.3/css/bootstrap.css"></link>
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/jquery-ui.js"></script> 
+    <script src="../static/bootstrap-4.1.3/js/bootstrap.js"></script>
+
+    <!-- Custom -->
+    <link rel="stylesheet" href="../static/css/cliente.css"></link>
+    <script type="text/javascript" src="{{url_for('static', filename='cliente.js')}}"></script>
+    <!-- <script type="text/javascript" src="{{url_for('static', filename='paginator.js')}}"></script> -->
+</head>
+
+<body>
+    <!-- Navebar -->
+    <nav class="navbar navbar-light bg-light navbar-custom">
+        <a class="navbar-brand" href="#">
+            <img src="../static/resources/logo.png" width="70" height="30" class="d-inline-block align-workspace-title"
+            alt="">
+        </a>
+        <div>
+            {% if cliente %}
+            <h1>{{ cliente }}</h1>
+            {% else %}
+            <h1>Hello, World!</h1>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Processos -->
+    <div class="processos-container">
+        <div class="row processos-row">
+            <div class="col-md-3">
+                Selecionar Processo
+            </div>
+            <div class="col-md-3">
+                Movimentações processadas
+            </div>
+            <div class="col-md-3">
+                Sentenças Identificadas
+            </div>
+            <div class="col-md-3">
+                Sentenças Processadas
+            </div>
+        </div>
+        <div class="row processos-row">
+            <div class="col-md-3">
+                <select class="processos">
+                    <option value="selecionar"> Selecionar.. </option>
+                    {% for js in json %}
+                    <option value="{{ js }}"> {{ js }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                {{ json['meta']['movimentacoesProcessadas'] }}
+            </div>
+            <div class="col-md-3">
+                {{ json['meta']['sentencasEncontradas'] }}
+            </div>
+            <div class="col-md-3">
+                {{ json['meta']['sentencasProcessadas'] }}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Table -->
+    <div class="table-responsive" >
+        <table class="table table-striped" cellspacing="1" cellpadding="1" id="myTable">
+            <thead>
+                <tr>
+                    <th>Numero Processo</th>
+                    <th>Data</th>
+                    <th>Autor</th>
+                    <th>Reu</th>
+                    <th>Decisão</th>
+                    <th>Onus</th>
+                    <th>Valor</th>
+                    <th>Vara</th>
+                    <th>Forum</th>
+                </tr>
+            </thead>
+
+            <tbody id="data">
+              {% for item in json if item != 'meta'%}
+              <section id="{{ loop.index }}">
+                <tr id="Item{{ loop.index }}pt1">
+                    <td class="cnj-align" scope="row" rowspan="2">{{ item }}</td>
+                    <td>{{ json[item]['Data'] }}</td>
+                    <td>{{ json[item]['Autor'] }}</td>
+                    <td>{{ json[item]['Reu'] }}</td>
+                    <td>{{ json[item]['Decisao'] }}</td>
+                    <td>{{ json[item]['Onus'] }}</td>
+                    <td><b class="Money">{{ json[item]['Valor'] }}</b></td>
+                    <!--<a class="valor" href="../static/formatar.js"Valor></a>-->
+                    <td>{{ json[item]['Vara'] }}</td>
+                    <td>{{ json[item]['Forum'] }}</td>
+                </tr>
+                <tr id="Item{{ loop.index }}pt2">
+                    <td class="cnj-align" scope="row" rowspan="2" style="display: none">{{ item }}</td>
+                    <td id="{{ loop.index0 }}">{{ json[item]['CPFCNPJ'] }}</td>
+                    <td id="{{ loop.index0 }}" colspan="5"> {{ json[item]['Descricao'] }}</td>
+                    <td colspan="2" class="btn-group-align">
+                        <!-- <a class="btn btn-custom btn-borda" href="http://localhost:5000/documento?tipo=inicial&cliente={{ cliente }}&cnj={{ item }}">Inicial</a> -->
+                        <!-- <a class="btn btn-custom btn-borda" href="http://localhost:5000/documento?tipo=sentenca&cliente={{ cliente }}&cnj={{ item }}">Sentenca</a> -->
+                        <a class="btn btn-custom btn-borda" href="/documento?tipo=inicial&cliente={{ cliente }}&cnj={{ item }}">Inicial</a>
+                        <a class="btn btn-custom btn-borda" href="/documento?tipo=sentenca&cliente={{ cliente }}&cnj={{ item }}">Sentenca</a>
+                    </td>
+                </tr> 
+
+            </section>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+</div>
+<!-- Paginacao -->
+<div id="pagi"></div>
+<script type="text/javascript">
+     window.onload = function(){
+    $( ".Money" ).each(function() {
+        (this).toLocaleString('pt-BR');
+        });
+    }
+    </script>
+</body>
+</html>
